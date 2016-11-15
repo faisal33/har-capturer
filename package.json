@@ -1,5 +1,5 @@
 {
-    "name": "chrome-har-capturer",
+    "name": "chrome-har-capturer-new",
     "author": "Andrea Cardaci <cyrus.and@gmail.com>",
     "license": "MIT",
     "description": "Capture HAR files from a remote Chrome instance",
