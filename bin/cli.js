@@ -15,6 +15,7 @@ program
     .option('-d, --delay <ms>', 'time to wait after the load event')
     .option('-g, --give-up <s>', 'time to wait before giving up')
     .option('-f, --force', 'continue even without benchmarking extension')
+    .option('-r, --reloads <count>','number of reloads of the url')
     .option('-v, --verbose', 'enable verbose output on stderr')
     .parse(process.argv);
 
@@ -24,7 +25,12 @@ if (program.args.length === 0) {
 }
 
 var output = program.output;
+var reloads = program.reloads;
 var urls = program.args;
+for(var i=1; i<reloads; i++){
+ program.args.push(urls[0]);
+}
+
 var c = chc.load(urls, {
     'host': program.host,
     'port': program.port,
@@ -33,7 +39,7 @@ var c = chc.load(urls, {
     'onLoadDelay': program.delay,
     'giveUpTime': program.giveUp,
     'force': program.force
-});
+},reloads);
 
 if (program.verbose) {
     chc.setVerbose();
@@ -42,19 +48,27 @@ if (program.verbose) {
 c.on('pageEnd', function (url) {
     var status = 'DONE';
     if (process.stderr.isTTY) status = status.green;
-    console.error(status + ' ' + url);
+    //console.error(status + ' ' + url);
 });
 c.on('pageError', function (url) {
     var status = 'FAIL';
     if (process.stderr.isTTY) status = status.red;
-    console.error(status + ' ' + url);
+    console.log(status + '' + url.entries.length);
 });
 c.on('end', function (har) {
     var json = JSON.stringify(har, null, 4);
+    var average = 0;
+    for(var i=0; i<har.TimeTaken.length; i++){
+            average += har.TimeTaken[i].timeDifference;
+    }
+    average = average/har.TimeTaken.length;
     if (program.output) {
         fs.writeFileSync(output, json);
     } else {
         console.log(json);
+        console.log("\n");
+        console.log("Average Time Difference between Initial Load and First Ad Request: " +average+ " ms");
+        console.log("\n");
     }
 });
 c.on('error', function (err) {
