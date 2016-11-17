@@ -40,6 +40,7 @@ For MAC Users: /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome
       -h, --help           output usage information
       -r, --reloads <count>    reloads the given url count times
       -o, --output <file>  dump to file instead of stdout
+      -d, --delay <ms> Delay between each page load (recommended) 
 
 
 This module comes with a utility that can be used to generate a cumulative HAR
@@ -52,9 +53,9 @@ Install globally with:
 Load URL as:
 
 
-    File:      chrome-har-capturer -o test.har  https://www.google.com -r 5
+    File:      chrome-har-capturer -o test.har  https://www.google.com -r 5 -d 2000
             
-    Console:   chrome-har-capturer https://www.google.com -r 5
+    Console:   chrome-har-capturer https://www.google.com -r 5 -d 2000
                         
             
             
